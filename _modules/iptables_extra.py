@@ -2,6 +2,12 @@
 from os import chmod,remove
 from time import time
 from subprocess import Popen,PIPE
+import configparser
+
+#  Get configuration
+config = configparser.ConfigParser()
+config.read('config')
+local_script_dir = config['Default']['LocalScriptDir']
 
 def get_tables(family="ipv4"):
 
@@ -135,7 +141,7 @@ def flush_all(family="ipv4"):
 
     tables = get_structure(family)
 
-    f_name = '/tmp/' + cmd + '-flush-' + str(time()).split('.')[0] + '.sh'
+    f_name = local_script_dir + cmd + '-flush-' + str(time()).split('.')[0] + '.sh'
 
     with open(f_name, 'w') as f:
         f.write('#!/bin/sh\n')
@@ -168,7 +174,7 @@ def set_policy_all(family="ipv4", policy="ACCEPT"):
 
     tables = get_structure(family)
 
-    f_name = '/tmp/' + cmd + '-policy-' + str(time()).split('.')[0] + '.sh'
+    f_name = local_script_dir + cmd + '-policy-' + str(time()).split('.')[0] + '.sh'
 
     with open(f_name, 'w') as f:
         f.write('#!/bin/sh\n')
@@ -213,7 +219,7 @@ def remove_stale_tables(config_file, family="ipv4"):
 
     if diff != []:
         tables = get_structure(family)
-        f_name = '/tmp/' + cmd + '-flush-' + str(time()).split('.')[0] + '.sh'
+        f_name = local_script_dir + cmd + '-flush-' + str(time()).split('.')[0] + '.sh'
         with open(f_name, 'w') as f:
             f.write('#!/bin/sh\n')
             for table in tables:
